@@ -1,24 +1,43 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+// import { Stack } from "expo-router";
+// import "@/global.css";
+//
+// export default function RootLayout() {
+//   return <Stack screenOptions={{headerShown: false}} />;
+// }
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+
+import {SplashScreen, Stack} from "expo-router";
+import "@/global.css";
+import {useFonts} from "expo-font";
+import {useEffect} from "react";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
 
+    const [fontLoaded]=useFonts({
+        'sans-ragular': require('../assets/fonts/PlusJakartaSans-Regular.ttf'),
+        'sans-bold': require('../assets/fonts/PlusJakartaSans-Bold.ttf'),
+        'sans-medium': require('../assets/fonts/PlusJakartaSans-Medium.ttf'),
+        'sans-semibold': require('../assets/fonts/PlusJakartaSans-SemiBold.ttf'),
+        'sans-extrabold': require('../assets/fonts/PlusJakartaSans-ExtraBold.ttf'),
+        'sans-light': require('../assets/fonts/PlusJakartaSans-Light.ttf'),
+    });
+
+    useEffect(()=>{
+        if(fontLoaded){
+            SplashScreen.hideAsync();
+        }
+    },[fontLoaded]);
+
+    if(!fontLoaded) return null;
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      <Stack
+          initialRouteName="(tabs)"
+          screenOptions={{ headerShown: false }}
+      >
+        {/*<Stack.Screen name="(tabs)" />*/}
+        {/*<Stack.Screen name="(auth)" />*/}
+        {/*<Stack.Screen name="onboarding" />*/}
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
   );
 }
