@@ -243,11 +243,11 @@
     }
 
     .auth-brand-block {
-        @apply mt-2 items-center;
+        @apply mb-6 mt-4 items-center justify-center;
     }
 
     .auth-logo-wrap {
-        @apply mb-7 flex-row items-center gap-3;
+        @apply flex-row items-center justify-center gap-3;
     }
 
     .auth-logo-mark {
@@ -267,11 +267,11 @@
     }
 
     .auth-title {
-        @apply text-3xl font-sans-bold text-primary;
+        @apply text-center text-3xl font-sans-bold text-primary;
     }
 
     .auth-subtitle {
-        @apply mt-2 max-w-[320px] text-center text-base font-sans-medium text-muted-foreground;
+        @apply mt-2 text-center text-base font-sans-medium text-muted-foreground;
     }
 
     .auth-card {
