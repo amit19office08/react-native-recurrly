@@ -44,14 +44,21 @@ export default function SignInScreen() {
             return;
         }
 
-        const {error: finalizeErr} = await signIn.finalize();
-        if (finalizeErr) {
-            console.error('Sign in finalize error:', JSON.stringify(finalizeErr, null, 2));
-            setError(finalizeErr.longMessage || finalizeErr.message || "Unable to complete sign in.");
-            return;
-        }
+        if (signIn.status === 'complete') {
+            const {error: finalizeErr} = await signIn.finalize();
+            if (finalizeErr) {
+                console.error('Sign in finalize error:', JSON.stringify(finalizeErr, null, 2));
+                setError(finalizeErr.longMessage || finalizeErr.message || "Unable to complete sign in.");
+                return;
+            }
 
-        router.replace("/(tabs)");
+            router.replace("/(tabs)");
+        } else if (signIn.status === 'needs_second_factor') {
+            setError("Two-factor authentication is required. Please check your authenticator app.");
+        } else {
+            console.error('Unexpected sign-in status:', signIn.status);
+            setError("Unable to complete sign in. Please try again.");
+        }
     }, [email, password, signIn]);
 
     return (
