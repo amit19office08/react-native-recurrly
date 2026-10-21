@@ -46,8 +46,9 @@ const CreateSubscriptionModal = ({visible, onClose, onAdd}: CreateSubscriptionMo
             newErrors.name = 'Name is required';
         }
 
-        const priceNum = parseFloat(price);
-        if (!price || isNaN(priceNum) || priceNum <= 0) {
+        const trimmedPrice = price.trim();
+        const priceNum = Number(trimmedPrice);
+        if (!trimmedPrice || isNaN(priceNum) || !isFinite(priceNum) || priceNum <= 0 || trimmedPrice !== String(priceNum)) {
             newErrors.price = 'Price must be a positive number';
         }
 

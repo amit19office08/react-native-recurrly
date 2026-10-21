@@ -4,7 +4,7 @@ import {Link} from "expo-router";
 import {SafeAreaView as RNSafeAreaView} from "react-native-safe-area-context";
 import {styled} from "nativewind";
 import {useUser} from "@clerk/expo";
-import {HOME_BALANCE, UPCOMING_SUBSCRIPTIONS} from "@/assets/constants/data";
+import {HOME_BALANCE} from "@/assets/constants/data";
 import {icons} from "@/assets/constants/icons";
 import {formatCurrency} from "@/lib/utils";
 import dayjs from "dayjs";
@@ -12,7 +12,7 @@ import ListHeading from "@/components/ListHeading";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 import SubscriptionCard from "@/components/SubscriptionCard";
 import CreateSubscriptionModal from "@/components/CreateSubscriptionModal";
-import {useState} from "react";
+import {useState, useMemo} from "react";
 import {useSubscriptions} from "@/lib/subscriptions-context";
 import {posthog} from "@/lib/posthog";
 import {posthogLog} from "@/lib/posthog-logger";
@@ -28,6 +28,26 @@ export default function App() {
     const userName = user
         ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.primaryEmailAddress?.emailAddress || 'User'
         : 'User';
+
+    const upcomingSubscriptions = useMemo(() => {
+        const now = dayjs();
+        return subscriptions
+            .filter((sub) => sub.status === 'active' && sub.renewalDate)
+            .map((sub) => {
+                const renewal = dayjs(sub.renewalDate);
+                const daysLeft = Math.max(0, renewal.diff(now, 'day'));
+                return {
+                    id: sub.id,
+                    icon: sub.icon,
+                    name: sub.name,
+                    price: sub.price,
+                    currency: sub.currency,
+                    daysLeft,
+                };
+            })
+            .sort((a, b) => a.daysLeft - b.daysLeft)
+            .slice(0, 5);
+    }, [subscriptions]);
 
     return (
         <SafeAreaView className="flex-1 bg-background p-5">
@@ -53,7 +73,7 @@ export default function App() {
                             <View className="mb-5">
                                 <ListHeading title="Upcoming"/>
                                 <FlatList
-                                    data={UPCOMING_SUBSCRIPTIONS}
+                                    data={upcomingSubscriptions}
                                     renderItem={({item}) => (<UpcomingSubscriptionCard {...item}/>)}
                                     keyExtractor={(item) => item.id}
                                     horizontal

@@ -219,7 +219,7 @@ As long as you associate the distinct IDs with `posthog.identify()` or `posthog.
 
 Here's an example implementation for handling deep links from web to mobile:
 
-### iOS
+#### iOS deep-link example
 
 ```swift
 import PostHog
@@ -260,7 +260,7 @@ class DeepLinkIdentityManager {
 }
 ```
 
-### Android
+#### Android deep-link example
 
 ```kotlin
 import android.net.Uri
