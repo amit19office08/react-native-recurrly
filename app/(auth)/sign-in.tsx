@@ -4,6 +4,8 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {router} from "expo-router";
 import {useSignIn} from "@clerk/expo";
 import {styled} from "nativewind";
+import {posthog} from "@/lib/posthog";
+import {posthogLog} from "@/lib/posthog-logger";
 
 const SafeArea = styled(SafeAreaView);
 
@@ -52,6 +54,8 @@ export default function SignInScreen() {
                 return;
             }
 
+            posthog?.capture('sign_in_completed');
+            posthogLog.signInCompleted();
             router.replace("/(tabs)");
         } else if (signIn.status === 'needs_second_factor') {
             setError("Two-factor authentication is required. Please check your authenticator app.");
