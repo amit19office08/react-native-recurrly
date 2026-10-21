@@ -3,6 +3,7 @@ import React, {useState, useCallback} from 'react'
 import {icons} from "@/assets/constants/icons";
 import clsx from "clsx";
 import dayjs from "dayjs";
+import {posthog} from "@/lib/posthog";
 
 const categories = ["Entertainment", "AI Tools", "Developer Tools", "Design", "Productivity", "Cloud", "Music", "Other"];
 
@@ -79,6 +80,14 @@ const CreateSubscriptionModal = ({visible, onClose, onAdd}: CreateSubscriptionMo
         };
 
         onAdd(newSubscription);
+
+        posthog?.capture('subscription_created', {
+            subscription_name: name.trim(),
+            subscription_price: priceNum,
+            subscription_frequency: frequency,
+            subscription_category: category,
+        });
+
         resetForm();
         onClose();
     }, [name, price, frequency, category, validate, onAdd, onClose, resetForm]);
