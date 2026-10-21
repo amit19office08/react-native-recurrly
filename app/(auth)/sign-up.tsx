@@ -4,6 +4,8 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {router} from "expo-router";
 import {useSignUp} from "@clerk/expo";
 import {styled} from "nativewind";
+import {posthog} from "@/lib/posthog";
+import {posthogLog} from "@/lib/posthog-logger";
 
 const SafeArea = styled(SafeAreaView);
 
@@ -75,6 +77,7 @@ export default function SignUpScreen() {
             return;
         }
 
+        posthog?.capture('sign_up_verification_started');
         setStep("verify");
     };
 
@@ -99,6 +102,8 @@ export default function SignUpScreen() {
             return;
         }
 
+        posthog?.capture('sign_up_completed');
+        posthogLog.signUpCompleted();
         router.replace("/(tabs)");
     };
 
@@ -109,7 +114,10 @@ export default function SignUpScreen() {
         if (sendErr) {
             console.error('Resend code error:', JSON.stringify(sendErr, null, 2));
             setError(sendErr.longMessage || sendErr.message || "Failed to resend verification email.");
+            return;
         }
+
+        posthog?.capture('verification_code_resent');
     };
 
     return (

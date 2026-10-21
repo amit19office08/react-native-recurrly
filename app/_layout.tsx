@@ -1,9 +1,11 @@
 import {SplashScreen, Stack} from "expo-router";
 import "@/global.css";
 import {useFonts} from "expo-font";
-import {useEffect} from "react";
-import {ClerkProvider, useAuth} from "@clerk/expo";
+import {useEffect, useRef} from "react";
+import {ClerkProvider, useAuth, useUser} from "@clerk/expo";
 import {tokenCache} from "@clerk/expo/token-cache";
+import {PostHogProvider} from "posthog-react-native";
+import {posthog} from "@/lib/posthog";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,6 +25,37 @@ function AppContent() {
     });
 
     const {isLoaded, isSignedIn} = useAuth();
+    const {user, isLoaded: isUserLoaded} = useUser();
+    const identifiedUserId = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (!posthog || !isLoaded || !isUserLoaded) return;
+
+        if (!isSignedIn || !user) {
+            if (identifiedUserId.current) {
+                posthog.reset();
+                identifiedUserId.current = null;
+            }
+            return;
+        }
+
+        if (identifiedUserId.current === user.id) return;
+
+        if (identifiedUserId.current) {
+            posthog.reset();
+        }
+
+        const email = user.primaryEmailAddress?.emailAddress;
+        const name = [user.firstName, user.lastName].filter(Boolean).join(' ');
+
+        posthog.identify(user.id, {
+            $set: {
+                ...(email ? {email} : {}),
+                ...(name ? {name} : {}),
+            },
+        });
+        identifiedUserId.current = user.id;
+    }, [isLoaded, isSignedIn, isUserLoaded, user]);
 
     useEffect(() => {
         if (fontLoaded || fontError) {
@@ -33,7 +66,7 @@ function AppContent() {
     if (!fontLoaded && !fontError) return null;
     if (!isLoaded) return null;
 
-    return (
+    const stack = (
         <Stack screenOptions={{headerShown: false}}>
             <Stack.Protected guard={isSignedIn}>
                 <Stack.Screen name="(tabs)" />
@@ -44,6 +77,8 @@ function AppContent() {
             <Stack.Screen name="onboarding" />
         </Stack>
     );
+
+    return posthog ? <PostHogProvider client={posthog}>{stack}</PostHogProvider> : stack;
 }
 
 export default function RootLayout() {
