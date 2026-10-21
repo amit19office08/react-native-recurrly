@@ -1,17 +1,19 @@
 import "@/global.css";
-import {FlatList, Image, Text, View} from "react-native";
+import {FlatList, Image, Text, View, Pressable} from "react-native";
 import {Link} from "expo-router";
 import {SafeAreaView as RNSafeAreaView} from "react-native-safe-area-context";
 import {styled} from "nativewind";
 import {useUser} from "@clerk/expo";
-import {HOME_BALANCE, HOME_SUBSCRIPTIONS, UPCOMING_SUBSCRIPTIONS} from "@/assets/constants/data";
+import {HOME_BALANCE, UPCOMING_SUBSCRIPTIONS} from "@/assets/constants/data";
 import {icons} from "@/assets/constants/icons";
 import {formatCurrency} from "@/lib/utils";
 import dayjs from "dayjs";
 import ListHeading from "@/components/ListHeading";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 import SubscriptionCard from "@/components/SubscriptionCard";
+import CreateSubscriptionModal from "@/components/CreateSubscriptionModal";
 import {useState} from "react";
+import {useSubscriptions} from "@/lib/subscriptions-context";
 import {posthog} from "@/lib/posthog";
 import {posthogLog} from "@/lib/posthog-logger";
 
@@ -19,8 +21,10 @@ const SafeAreaView=styled(RNSafeAreaView);
 
 export default function App() {
     const [expandedSubscriptionId, setExpandedSubscriptionId] =useState<string| null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
     const {user} = useUser();
-    
+    const {subscriptions, addSubscription} = useSubscriptions();
+
     const userName = user
         ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.primaryEmailAddress?.emailAddress || 'User'
         : 'User';
@@ -35,7 +39,9 @@ export default function App() {
                                     <Image source={user?.imageUrl ? {uri: user.imageUrl} : require('@/assets/images/avatar.png')} className="home-avatar" />
                                     <Text className="home-user-name">{userName}</Text>
                                 </View>
-                                <Image source={icons.add} className="home-add-icon" />
+                                <Pressable onPress={() => setModalVisible(true)}>
+                                    <Image source={icons.add} className="home-add-icon" />
+                                </Pressable>
                             </View>
                             <View className="home-balance-card">
                                 <Text className="home-balance-label">Balance</Text>
@@ -58,7 +64,7 @@ export default function App() {
                             <ListHeading title="All Subscriptions"/>
                         </>
                     )}
-                    data={HOME_SUBSCRIPTIONS}
+                    data={subscriptions}
                     keyExtractor={(item) => item.id}
                     renderItem={({item}) => (
                         <SubscriptionCard
@@ -80,6 +86,11 @@ export default function App() {
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={<Text className="home-empty-state">No Subscriptions yet.</Text>}
                     contentContainerClassName="pb-18"
+                />
+                <CreateSubscriptionModal
+                    visible={modalVisible}
+                    onClose={() => setModalVisible(false)}
+                    onAdd={addSubscription}
                 />
         </SafeAreaView>
     );
