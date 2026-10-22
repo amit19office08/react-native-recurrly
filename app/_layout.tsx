@@ -75,6 +75,7 @@ function AppContent() {
                 <Stack.Screen name="(auth)" />
             </Stack.Protected>
             <Stack.Screen name="onboarding" />
+            <Stack.Screen name="splash" />
         </Stack>
     );
 

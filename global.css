@@ -417,4 +417,140 @@
     .category-chip-text-active {
         @apply text-accent;
     }
+
+    .splash-safe-area {
+        @apply flex-1 bg-accent;
+    }
+
+    .splash-container {
+        @apply flex-1 items-center justify-between px-6 py-12;
+    }
+
+    .splash-pattern {
+        @apply flex-1 w-full max-h-80;
+    }
+
+    .splash-content {
+        @apply w-full items-center gap-4 pb-8;
+    }
+
+    .splash-title {
+        @apply text-4xl font-sans-extrabold text-white text-center;
+    }
+
+    .splash-subtitle {
+        @apply text-lg font-sans-medium text-white/80 text-center;
+    }
+
+    .splash-button {
+        @apply mt-4 w-full rounded-full bg-white py-4 items-center justify-center;
+    }
+
+    .splash-button-text {
+        @apply text-lg font-sans-bold text-primary;
+    }
+
+    .insights-header {
+        @apply mb-6 flex-row items-center justify-between;
+    }
+
+    .insights-title {
+        @apply text-2xl font-sans-bold text-primary;
+    }
+
+    .insights-menu {
+        @apply size-10 items-center justify-center rounded-full bg-muted;
+    }
+
+    .insights-menu-text {
+        @apply text-xl font-sans-bold text-primary;
+    }
+
+    .insights-chart-container {
+        @apply rounded-3xl bg-card p-5;
+    }
+
+    .insights-chart {
+        @apply flex-row items-end justify-between h-48 px-2;
+    }
+
+    .insights-chart-bar {
+        @apply flex-1 items-center justify-end;
+    }
+
+    .insights-chart-bar-fill {
+        @apply w-3 rounded-t-full bg-primary;
+    }
+
+    .insights-chart-bar-highlight {
+        @apply bg-accent;
+    }
+
+    .insights-chart-label {
+        @apply mt-2 text-sm font-sans-medium text-muted-foreground;
+    }
+
+    .insights-chart-tooltip {
+        @apply -mt-8 bg-accent rounded-full px-2 py-1;
+    }
+
+    .insights-chart-tooltip-text {
+        @apply text-xs font-sans-bold text-white;
+    }
+
+    .insights-expenses-card {
+        @apply mt-4 rounded-2xl bg-card p-5 border border-border;
+    }
+
+    .insights-expenses-row {
+        @apply flex-row items-center justify-between;
+    }
+
+    .insights-expenses-label {
+        @apply text-lg font-sans-bold text-primary;
+    }
+
+    .insights-expenses-date {
+        @apply text-sm font-sans-medium text-muted-foreground;
+    }
+
+    .insights-expenses-amount {
+        @apply text-xl font-sans-bold text-primary;
+    }
+
+    .insights-expenses-change {
+        @apply text-sm font-sans-medium text-muted-foreground;
+    }
+
+    .insights-history-item {
+        @apply rounded-2xl p-4 mb-3;
+    }
+
+    .insights-history-row {
+        @apply flex-row items-center justify-between;
+    }
+
+    .insights-history-main {
+        @apply flex-row items-center gap-3;
+    }
+
+    .insights-history-icon {
+        @apply size-10;
+    }
+
+    .insights-history-name {
+        @apply text-lg font-sans-bold text-primary;
+    }
+
+    .insights-history-date {
+        @apply text-sm font-sans-medium text-muted-foreground;
+    }
+
+    .insights-history-price {
+        @apply text-lg font-sans-bold text-primary;
+    }
+
+    .insights-history-billing {
+        @apply text-sm font-sans-medium text-muted-foreground;
+    }
 }
